@@ -52,6 +52,9 @@ pub enum Statement {
 	/// A statement that a validator has deemed a candidate valid.
 	#[codec(index = 2)]
 	Valid(CandidateHash),
+	/// A statement that a validator has deemed a candidate invalid.
+	#[codec(index = 3)]
+	Invalid(CandidateHash),
 }
 
 impl Statement {

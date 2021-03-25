@@ -297,6 +297,14 @@ pub mod v1 {
 	use super::RequestId;
 	use std::convert::TryFrom;
 
+	/// Network messages used by the availability distribution subsystem
+	#[derive(Debug, Clone, Encode, Decode, PartialEq, Eq)]
+	pub enum AvailabilityDistributionMessage {
+		/// An erasure chunk for a given candidate hash.
+		#[codec(index = 0)]
+		Chunk(CandidateHash, ErasureChunk),
+	}
+
 	/// Network messages used by the availability recovery subsystem.
 	#[derive(Debug, Clone, Encode, Decode, PartialEq, Eq)]
 	pub enum AvailabilityRecoveryMessage {
@@ -364,14 +372,20 @@ pub mod v1 {
 		/// that they are a collator with given ID.
 		#[codec(index = 1)]
 		AdvertiseCollation(Hash, ParaId),
-		/// A collation sent to a validator was seconded.
-		#[codec(index = 4)]
-		CollationSeconded(SignedFullStatement),
+		/// Request the advertised collation at that relay-parent.
+		#[codec(index = 2)]
+		RequestCollation(RequestId, Hash, ParaId),
+		/// A requested collation.
+		#[codec(index = 3)]
+		Collation(RequestId, CandidateReceipt, CompressedPoV),
 	}
 
 	/// All network messages on the validation peer-set.
 	#[derive(Debug, Clone, Encode, Decode, PartialEq, Eq)]
 	pub enum ValidationProtocol {
+		/// Availability distribution messages
+		#[codec(index = 0)]
+		AvailabilityDistribution(AvailabilityDistributionMessage),
 		/// Bitfield distribution messages
 		#[codec(index = 1)]
 		BitfieldDistribution(BitfieldDistributionMessage),

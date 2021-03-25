@@ -6,22 +6,14 @@ edition = "2018"
 
 [dependencies]
 futures = "0.3.8"
-futures-timer = "3.0.2"
 parity-scale-codec = { version = "2.0.0", default-features = false, features = ["bit-vec", "derive"] }
-tracing = "0.1.25"
-bitvec = { version = "0.20.1", default-features = false, features = ["alloc"] }
-merlin = "2.0"
-schnorrkel = "0.9.1"
-kvdb = "0.9.0"
-kvdb-rocksdb = "0.11.0"
-derive_more = "0.99.1"
 
 polkadot-node-subsystem = { path = "../../subsystem" }
 polkadot-node-subsystem-util = { path = "../../subsystem-util" }
 polkadot-overseer = { path = "../../overseer" }
 polkadot-primitives = { path = "../../../primitives" }
 polkadot-node-primitives = { path = "../../primitives" }
-polkadot-node-jaeger = { path = "../../jaeger" }
+bitvec = "0.20.1"
 
 sc-client-api = { git = "https://github.com/paritytech/substrate", branch = "master", default-features = false }
 sc-keystore = { git = "https://github.com/paritytech/substrate", branch = "master", default-features = false }

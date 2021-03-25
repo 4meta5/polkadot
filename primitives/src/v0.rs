@@ -685,53 +685,14 @@ const BACKING_STATEMENT_MAGIC: [u8; 4] = *b"BKNG";
 #[cfg_attr(feature = "std", derive(Debug, Hash))]
 pub enum CompactStatement {
 	/// Proposal of a parachain candidate.
-	Seconded(CandidateHash),
-	/// State that a parachain candidate is valid.
-	Valid(CandidateHash),
-}
-
-// Inner helper for codec on `CompactStatement`.
-#[derive(Encode, Decode)]
-enum CompactStatementInner {
 	#[codec(index = 1)]
-	Seconded(CandidateHash),
+	Candidate(CandidateHash),
+	/// State that a parachain candidate is valid.
 	#[codec(index = 2)]
 	Valid(CandidateHash),
-}
-
-impl From<CompactStatement> for CompactStatementInner {
-	fn from(s: CompactStatement) -> Self {
-		match s {
-			CompactStatement::Seconded(h) => CompactStatementInner::Seconded(h),
-			CompactStatement::Valid(h) => CompactStatementInner::Valid(h),
-		}
-	}
-}
-
-impl parity_scale_codec::Encode for CompactStatement {
-	fn size_hint(&self) -> usize {
-		// magic + discriminant + payload
-		4 + 1 + 32
-	}
-
-	fn encode_to<T: parity_scale_codec::Output + ?Sized>(&self, dest: &mut T) {
-		dest.write(&BACKING_STATEMENT_MAGIC);
-		CompactStatementInner::from(self.clone()).encode_to(dest)
-	}
-}
-
-impl parity_scale_codec::Decode for CompactStatement {
-	fn decode<I: parity_scale_codec::Input>(input: &mut I) -> Result<Self, parity_scale_codec::Error> {
-		let maybe_magic = <[u8; 4]>::decode(input)?;
-		if maybe_magic != BACKING_STATEMENT_MAGIC {
-			return Err(parity_scale_codec::Error::from("invalid magic string"));
-		}
-
-		Ok(match CompactStatementInner::decode(input)? {
-			CompactStatementInner::Seconded(h) => CompactStatement::Seconded(h),
-			CompactStatementInner::Valid(h) => CompactStatement::Valid(h),
-		})
-	}
+	/// State that a parachain candidate is invalid.
+	#[codec(index = 3)]
+	Invalid(CandidateHash),
 }
 
 impl CompactStatement {
